@@ -1,0 +1,88 @@
+---
+title: "Health"
+author: "Alex Dolphin"
+date: "15/05/2020"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(data.table)
+library(ggplot2)
+library(lubridate)
+library(magrittr)
+library(plotly)
+library(shiny)
+library(stringr)
+knitr::opts_chunk$set(echo = FALSE)
+
+# Read data
+source("read_scales_data.R")
+```
+
+Summary
+=======================================================================
+
+Sidebar {.sidebar}
+-----------------------------------------------------------------------
+
+```{r select_metric}
+selectInput(
+    "selected_metric",
+    "Select mectric(s)",
+    unique(melt_scales_data$variable),
+    multiple = TRUE,
+    selected = "weight"
+)
+checkboxInput("expand_y", "Expand y to 0")
+checkboxInput("normalise_vals", "Normalise values")
+checkboxInput("loess", "Loess trendline")
+```
+
+Row
+-----------------------------------------------------------------------
+
+```{r plot_metric}
+renderPlotly({
+    plot_data <- melt_scales_data[variable %in% input$selected_metric]
+    if(input$normalise_vals){
+        plot_data[,
+            value := (value - min(value, na.rm=TRUE))/
+                     (max(value, na.rm=TRUE) - min(value, na.rm=TRUE)),
+            by=.(variable)
+        ]
+    }
+    g <- ggplot(plot_data, aes(x=time, y=value, col=variable)) +
+        geom_point(size=1) +
+        theme_bw() +
+        labs(
+            x = "Date",
+            y = input$selected_metric
+        )
+    if(input$expand_y){g <- g + ylim(c(0, max(plot_data$value)))}
+    if(input$loess){g <- g + geom_smooth(fill=NA)}
+    ggplotly(g, dynamicTicks = TRUE)
+})
+```
+
+Composition
+=======================================================================
+
+```{r plot_composition}
+renderPlotly({
+    plot_data <- melt_scales_data[
+        variable %in% c(
+            "body_fat_percent", "muscle_mass_percent", "bone_mass_percent"
+        )
+    ] %>% na.omit()
+    g <- ggplot(plot_data, aes(x=time, y=value*100, col=variable)) +
+        geom_line() +
+        theme_bw() +
+        labs(x="Date", y="%", col="Composition") +
+        ylim(c(0, max(plot_data$value*100)))
+
+    ggplotly(g, dynamicTicks = TRUE)
+})
+```
