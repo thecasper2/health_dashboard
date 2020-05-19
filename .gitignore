@@ -43,3 +43,6 @@ docs/
 
 # No data
 *.csv
+
+# No mac files
+.DS_Store
