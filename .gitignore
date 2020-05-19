@@ -41,8 +41,9 @@ vignettes/*.pdf
 # pkgdown site
 docs/
 
-# No data
+# No data except the example data
 *.csv
+!example-data.csv
 
 # No mac files
 .DS_Store
