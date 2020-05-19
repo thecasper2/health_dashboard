@@ -20,6 +20,9 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Read data
 source("read_scales_data.R")
+scales_data <- get_scales_data()
+# Melt the data by time for plotting the various metrics
+melt_scales_data <- melt(scales_data, id="Time")
 ```
 
 Summary
@@ -29,15 +32,17 @@ Sidebar {.sidebar}
 -----------------------------------------------------------------------
 
 ```{r select_metric}
+# Allow the user to select one of the data metrics
 selectInput(
     "selected_metric",
     "Select mectric(s)",
     unique(melt_scales_data$variable),
     multiple = TRUE,
-    selected = "weight"
+    selected = "Weight"
 )
-checkboxInput("expand_y", "Expand y to 0")
+# Allow metrics to be normalised so they can be plotted on the same scale
 checkboxInput("normalise_vals", "Normalise values")
+# Show a loess trendline for the selected metrics
 checkboxInput("loess", "Loess trendline")
 ```
 
@@ -45,8 +50,11 @@ Row
 -----------------------------------------------------------------------
 
 ```{r plot_metric}
+# Render the plotly timeseries
 renderPlotly({
+    # Filter the data to only have the metrics selected
     plot_data <- melt_scales_data[variable %in% input$selected_metric]
+    # If requested, normalise the metrics
     if(input$normalise_vals){
         plot_data[,
             value := (value - min(value, na.rm=TRUE))/
@@ -54,15 +62,17 @@ renderPlotly({
             by=.(variable)
         ]
     }
-    g <- ggplot(plot_data, aes(x=time, y=value, col=variable)) +
+    # Create a ggplot of the metrics
+    g <- ggplot(plot_data, aes(x=Time, y=value, col=variable)) +
         geom_point(size=1) +
         theme_bw() +
         labs(
             x = "Date",
             y = input$selected_metric
         )
-    if(input$expand_y){g <- g + ylim(c(0, max(plot_data$value)))}
+    # If required also plot a loess trendline
     if(input$loess){g <- g + geom_smooth(fill=NA)}
+    # Reutrn a plotly plot
     ggplotly(g, dynamicTicks = TRUE)
 })
 ```
@@ -71,18 +81,21 @@ Composition
 =======================================================================
 
 ```{r plot_composition}
+# Render the plotly timeseries of composition data
 renderPlotly({
+    # Restrict to the 3 components that make up the total body weight
     plot_data <- melt_scales_data[
         variable %in% c(
-            "body_fat_percent", "muscle_mass_percent", "bone_mass_percent"
+            "Body Fat", "Muscle Mass %", "Bone Mass %"
         )
     ] %>% na.omit()
-    g <- ggplot(plot_data, aes(x=time, y=value*100, col=variable)) +
+    # Create a ggplot, scaling the percentage values by 100
+    g <- ggplot(plot_data, aes(x=Time, y=value*100, col=variable)) +
         geom_line() +
         theme_bw() +
         labs(x="Date", y="%", col="Composition") +
         ylim(c(0, max(plot_data$value*100)))
-
+    # Return a plotly plot
     ggplotly(g, dynamicTicks = TRUE)
 })
 ```
