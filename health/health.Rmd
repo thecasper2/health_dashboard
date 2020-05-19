@@ -1,5 +1,5 @@
 ---
-title: "Health"
+title: "Health Dashboard"
 author: "Alex Dolphin"
 date: "15/05/2020"
 output: 
@@ -11,11 +11,11 @@ runtime: shiny
 ```{r setup, include=FALSE}
 library(data.table)
 library(ggplot2)
-library(lubridate)
 library(magrittr)
 library(plotly)
 library(shiny)
-library(stringr)
+
+# Don't echo any code blocks, it's a dashboard after all!
 knitr::opts_chunk$set(echo = FALSE)
 
 # Read data

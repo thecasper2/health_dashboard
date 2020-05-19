@@ -4,9 +4,7 @@
 # - Returns the data as a data.table
 
 library(data.table)
-library(lubridate)
 library(magrittr)
-library(stringr)
 
 # Define the columns we expect to find when reading the data
 expected_cols <- c("Time of Measurement", "Weight", "BMI", "Body Fat",
