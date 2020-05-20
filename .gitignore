@@ -41,9 +41,11 @@ vignettes/*.pdf
 # pkgdown site
 docs/
 
-# No data except the example data
+# No data except the example data and test data
 *.csv
 !example-data.csv
+!/health/tests/test_data/bad_test_data/*.csv
+!/health/tests/test_data/good_test_data/*.csv
 
 # No mac files
 .DS_Store
