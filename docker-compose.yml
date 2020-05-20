@@ -11,4 +11,4 @@ services:
     ports:
       - '5001:3838'
     volumes:
-      - './health:/srv/shiny-server/health'
+      - './health/data:/srv/shiny-server/health/data'
