@@ -90,7 +90,7 @@ There are two ways to run the tests:
 
 1) If you are using the steps above to run via Docker, the tests are run automatically
 when `docker-compose up -d` is run. The output of the tests will be shown as the last step
-in the command the console.
+in the command line.
 2) If you wish to run the tests manually, you must:
 	a) Ensure you have installed the necessary R packages in accordance with the section
 	"Installing packages"
