@@ -1,6 +1,6 @@
 context("Testing read scales data")
 
-source("read_scales_data.R")
+source("../read_scales_data.R")
 
 # For testing string to numeric manipulation
 character_input <- c("90kg", "50.2kg", "500kcal", "20.5kcal", "50%", "20.2%",
@@ -25,7 +25,7 @@ test_that("Unknown suffixes causes an error", {
 })
 
 # Test the reading of scales data using test data
-good_test_data_directory <- "tests/test_data/good_test_data"
+good_test_data_directory <- "test_data/good_test_data"
 expected_read_good_data <- data.table::data.table(
     "Time of Measurement" = c("May 15, 2020 11:15:45 am",
                               "Apr 25, 2020 11:40:43 am",
@@ -54,17 +54,17 @@ test_that("Reading good scales data returns the correct data.table", {
     )
 })
 
-empty_directory <- "tests/test_data/empty_folder"
+empty_directory <- "test_data/empty_folder"
 
 test_that("Reading a directory with no .csv returns an error", {
     expect_error(
         read_scales_data(directory = empty_directory),
-        "No .csv files found in /tests/test_data/empty_folder",
+        "No .csv files found in /test_data/empty_folder",
         fixed = TRUE
     )
 })
 
-data_with_column_missing_directory <- "tests/test_data/bad_test_data"
+data_with_column_missing_directory <- "test_data/bad_test_data"
 
 test_that("Reading data with a column missing returns an error", {
     expect_error(
