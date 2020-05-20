@@ -20,6 +20,9 @@ flexdashboard.
 <a name="obtaining_the_data"></a>
 ## Obtaining the data
 
+If you do not have any data then it is possible to use this dashboard with the existing
+example data file.
+
 Renpho scales synchronise data with a user's smartphone. To get the data from the Renpho
 app, follow the following steps:
 
