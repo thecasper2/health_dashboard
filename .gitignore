@@ -41,6 +41,9 @@ vignettes/*.pdf
 # pkgdown site
 docs/
 
+# No rout data
+*.Rout
+
 # No data except the example data and test data
 *.csv
 !example-data.csv
