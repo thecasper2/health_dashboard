@@ -92,7 +92,7 @@ There are two ways to run the tests:
 when `docker-compose up -d` is run. The output of the tests will be shown as the last step
 in the command line.
 2) If you wish to run the tests manually, you must:
-	a) Ensure you have installed the necessary R packages in accordance with the section
+	- Ensure you have installed the necessary R packages in accordance with the section
 	[ Install Packages ](#install_packages)
-	b) From the command line, when you are in the root directory of this repository,
+	- From the command line, when you are in the root directory of this repository,
 	run the command: `R -e "testthat::test_dir('health/tests')"`
