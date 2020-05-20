@@ -30,15 +30,25 @@ scales_char_to_numeric <- function(string){
     # Remove numeric values and decimal point to identify the character suffix
     suffix <- str_remove_all(string, "[[[:digit:]]\\.]")
     # If the suffix is unrecognised, throw an error
-    if(!(suffix %in% c("%", "kg", "kcal", ""))){
-        stop(paste0("Unrecognised character suffix: ", suffix))
+    expected_suffixes <- c("%", "kg", "kcal", "")
+    if(!all(suffix %in% expected_suffixes)){
+        error_suffixes <- suffix[!(suffix %in% c("%", "kg", "kcal", ""))]
+        stop(
+            paste0(
+                c("Unrecognised character suffixes: ", error_suffixes),
+                collapse=" "
+            )
+        )
     }
-    # Remove suffix from string if it exists
-    if(suffix != ""){string <- str_remove_all(string, suffix)}
+    # Remove suffix from string if it exists and isn't blank
+    string[suffix != ""] <- str_remove_all(
+        string[suffix != ""],
+        paste(expected_suffixes[expected_suffixes != ""], collapse="|")
+    )
     # Convert to numeric
     numeric_out <- as.numeric(string)
     # If value was a percent, return as a decimal
-    if(suffix == "%"){numeric_out <- numeric_out/100}
+    numeric_out[suffix == "%"] <- numeric_out[suffix == "%"]/100
     return(numeric_out)
 }
 
@@ -62,8 +72,10 @@ read_scales_data <- function(directory="data", expected_cols_=expected_cols){
     if(!all(colnames(data) == expected_cols_)){
         stop(
             paste0(
-                "The following columns are missing in the data: ",
-                expected_cols[!(expected_cols %in% colnames(data))]
+                c(
+                    "The following columns are missing in the data:",
+                    expected_cols[!(expected_cols %in% colnames(data))]
+                ), collapse=" "
             )
         )
     }
@@ -105,19 +117,20 @@ add_metrics <- function(data){
     #' @param data The output of clean_scales_data()
 
     data[, `:=` (
-        `Body Fat kg` = `Body Fat` * Weight,
-        `Muscle Mass %` = `Muscle Mass` / Weight,
-        `Bone Mass %` = `Bone Mass` / Weight
+        `Body Fat kg` = round(`Body Fat` * Weight, 7),
+        `Muscle Mass %` = round(`Muscle Mass` / Weight, 7),
+        `Bone Mass %` = round(`Bone Mass` / Weight, 7)
     )]
 
     return(data[])
 }
 
-get_scales_data <- function(){
+get_scales_data <- function(directory="data"){
 
     #' Reads the scales data, applys the cleaning function, adds metrics,
     #' then returns the resulting data.table
 
-    data <- read_scales_data() %>% clean_scales_data() %>% add_metrics()
+    data <- read_scales_data(directory=directory) %>%
+        clean_scales_data() %>% add_metrics()
     return(data)
 }
