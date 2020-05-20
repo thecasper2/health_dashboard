@@ -7,7 +7,6 @@
 	* [ Using RStudio ](#using_rstudio)
 		* [ Install Packages ](#install_packages)
 		* [ Running the Dashboard ](#running_the_dashboard_rstudio)
-		run_dashboard
 * [ Running Tests ](#running_tests)
 
 <a name="overview"></a>
