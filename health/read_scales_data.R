@@ -69,7 +69,7 @@ read_scales_data <- function(directory="data", expected_cols_=expected_cols){
     # Read first .csv file
     data <- fread(paste0(directory, "/", files[1]))
     # Check the column names are correct, if not throw an error.
-    if(!all(colnames(data) == expected_cols_)){
+    if(!all(expected_cols_ %in% colnames(data))){
         stop(
             paste0(
                 c(
