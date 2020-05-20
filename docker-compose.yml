@@ -1,0 +1,14 @@
+version: "2.0"
+
+services:
+  shiny:
+    container_name: shiny-test
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    user: 'root'
+    ports:
+      - '5001:3838'
+    volumes:
+      - './health:/srv/shiny-server/health'
